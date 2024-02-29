@@ -4,8 +4,7 @@
 
 void Counting_sort(NVector::TVector<TPairKV<TPhoneNumber, std::string>>& arr, size_t idx, int max_digit, std::string segment) 
 {
-    int tmp[max_digit + 1];
-    memset(tmp, 0, sizeof(int) * (max_digit + 1));
+    NVector::TVector<int> tmp(max_digit + 1, 0);
     if (segment == "number")
     {
         for (size_t i = 0; i < arr.Size(); ++i)
@@ -23,11 +22,11 @@ void Counting_sort(NVector::TVector<TPairKV<TPhoneNumber, std::string>>& arr, si
                 tmp[arr[i].key.country_code[idx] - '0']++;
             }
         }
-        for (size_t i = 1; i < max_digit + 1; ++i)
+        for (size_t i = 1; i < tmp.Size(); ++i)
         {
             tmp[i] += tmp[i - 1];
         }
-        TPairKV<TPhoneNumber, std::string> result[arr.Size()];
+        TPairKV<TPhoneNumber, std::string> *result = new TPairKV<TPhoneNumber, std::string>[arr.Size()];
         for (size_t i = arr.Size(); i > 0; --i)
         {
             if (segment == "number")
@@ -50,6 +49,7 @@ void Counting_sort(NVector::TVector<TPairKV<TPhoneNumber, std::string>>& arr, si
         {
             arr[i] = result[i];
         }
+        delete[] result;
     }
 }
 

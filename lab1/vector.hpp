@@ -35,6 +35,17 @@ namespace NVector
             capacity = DEFAULT;
         }
 
+        TVector(const size_t n, T sample)
+        {
+            buffer = new T[n];
+            for (size_t i = 0; i < n; ++i)
+            {
+                buffer[i] = sample;
+            }
+            size = n;
+            capacity = n;
+        }
+
         void Push_back(const T& value) 
         {
             if (size == capacity) 
@@ -44,7 +55,7 @@ namespace NVector
             buffer[size++] = value;
         }
 
-        std::size_t Size()
+        size_t Size()
         {
             return size;
         }
