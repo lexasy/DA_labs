@@ -24,7 +24,7 @@ inline std::istream& operator>>(std::istream& is, TPhoneNumber& number)
     number.region_code = "";
     number.number = "";
     is >> number.full_number;
-    uint32_t counter = 0;
+    unsigned counter = 0;
     for (std::size_t i = 0; i < number.full_number.length(); ++i)
     {
         switch (number.full_number[i])
