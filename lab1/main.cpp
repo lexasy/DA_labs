@@ -104,17 +104,15 @@ int main()
     for (size_t i = 0; i < arr.Size(); ++i)
     {
         arr[i].key.country_code = std::string(max_country_len - arr[i].key.country_code.size(), '0') + arr[i].key.country_code;
-        // arr[i].key.country_null_counter = max_country_len - arr[i].key.country_code.size();
         arr[i].key.region_code = std::string(max_region_len - arr[i].key.region_code.size(), '0') + arr[i].key.region_code;
-        // arr[i].key.region_null_counter = max_region_len - arr[i].key.region_code.size();
         arr[i].key.number = std::string(max_number_len - arr[i].key.number.size(), '0') + arr[i].key.number;
-        // arr[i].key.number_null_counter = max_number_len - arr[i].key.number.size();
     }
     Radix_sort(arr, max_country_len, max_region_len, max_number_len);
-    std::cout << std::endl;
     for (size_t i = 0; i < arr.Size(); ++i)
     {
         std::cout << arr[i] << std::endl;
     }
     return 0;
 }
+
+// (Null symbols?), Tests, Report

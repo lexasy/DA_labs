@@ -10,14 +10,10 @@ public:
     std::string region_code;
     std::string number;
     std::string full_number;
-    // size_t country_null_counter;
-    // size_t region_null_counter;
-    // size_t number_null_counter;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const TPhoneNumber& number)
 {
-    // os << '+' << number.country_code << '-' << number.region_code << '-' << number.number;
     os << number.full_number;
     return os;
 }

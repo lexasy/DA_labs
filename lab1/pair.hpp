@@ -13,7 +13,7 @@ public:
 
 inline std::ostream& operator<<(std::ostream& os, const TPairKV<TPhoneNumber, std::string>& kv) 
 {
-    os << kv.key << " " << kv.value;
+    os << kv.key << "\t" << kv.value;
     return os;
 }
 

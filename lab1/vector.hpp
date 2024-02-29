@@ -22,6 +22,7 @@ namespace NVector
             {
                 new_buffer[i] = buffer[i];
             }
+            delete[] buffer;
             buffer = new_buffer;
             capacity *= 2;
         }
@@ -55,6 +56,11 @@ namespace NVector
                 throw std::logic_error("Out of bound exception");
             }
             return buffer[idx];
+        }
+
+        ~TVector()
+        {
+            delete[] buffer;
         }
     };
 }
