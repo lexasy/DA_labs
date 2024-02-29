@@ -6,11 +6,10 @@ import string
 
 class TPhoneNumber:
     def __init__(self, country, region, number, phonenumber) -> None:
-        self.county = country
+        self.country = country
         self.region = region
         self.number = number
         self.phonenumber = phonenumber
-        self.full_number = int(country + region + number)
 
 # Tests file counter
 TESTS_CNT = 10
@@ -22,12 +21,12 @@ def generate_kv() -> tuple[TPhoneNumber, str]:
     country = str(random.randint(1, 999))
     key += country
     key += "-"
-    region = str(random.randint(100, 999))
+    region = str(random.randint(1, 999))
     key += region
     key += "-"
-    number = str(random.randint(100000, 999999))
+    number = str(random.randint(10000, 999999))
     key += number
-    phone = TPhoneNumber(country=country, region=region, number=number, phonenumber=key)
+    phone = TPhoneNumber(country=int(country), region=int(region), number=int(number), phonenumber=key)
     value = ""
     length = random.randint(1, 64)
     for _ in range(length):
@@ -56,7 +55,9 @@ def main() -> None:
                 arr.append((key, value))
                 tfd.write(f"{key.phonenumber}\t{value}\n")
             # Sorting of random pairs: key-value
-            arr.sort(key=lambda x: x[0].full_number)
+            arr.sort(key=lambda x: x[0].number)
+            arr.sort(key=lambda x: x[0].region)
+            arr.sort(key=lambda x: x[0].country)
             # Writing sorted elements in answer file
             for elem in arr:
                 afd.write(f"{elem[0].phonenumber}\t{elem[1]}\n")
