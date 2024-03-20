@@ -89,7 +89,9 @@ function main()
 
     # Trash cleaning
     make clear
-    rm -rf ${TESTS_DIR} tmp diffo
+    rm diffo
+    rm -rf ${TESTS_DIR}
+    rm tmp
 }
 
 # Entrypoint

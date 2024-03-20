@@ -1,113 +1,152 @@
-#include "pair.hpp"
-#include "vector.hpp"
-#include <string.h>
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <memory>
 
-void Counting_sort(NVector::TVector<TPairKV<TPhoneNumber, std::string> >& arr, size_t idx, int max_digit, std::string segment) 
+const size_t MAX_LENGTH_OF_NUMBER = 16;
+const size_t MAX_LENGTH_OG_VALUE = 64;
+const size_t DEFAULT = 1000000;
+
+class TPhoneNumber 
 {
-    NVector::TVector<int> tmp(max_digit + 1, 0);
+public:
+    uint8_t null_counter;
+    char full_number[MAX_LENGTH_OF_NUMBER];
+    size_t idx;
+};
+
+namespace NVector 
+{
+    template <class T>
+    class TVector 
+    {
+    private:
+        std::size_t size;
+        std::size_t capacity;
+
+        void Expand() 
+        {
+            T *new_buffer = new T[capacity * 2];
+            capacity *= 2;
+            for (std::size_t i = 0; i < size; ++i) 
+            {
+                new_buffer[i] = std::move(buffer[i]);
+            }
+            delete[] buffer;
+            buffer = new_buffer;
+        }
+
+    public:
+        T *buffer;
+        TVector() 
+        {
+            buffer = new T[DEFAULT];
+            size = 0;
+            capacity = DEFAULT;
+        }
+
+        void Push_back(const T& value) 
+        {
+            if (size == capacity) 
+            {
+                Expand();
+            }
+            buffer[size] = value;
+            ++size;
+        }
+
+        size_t Size()
+        {
+            return size;
+        }
+
+        T& operator[](std::size_t idx) 
+        {
+            return buffer[idx];
+        }
+
+        ~TVector()
+        {
+            delete[] buffer;
+        }
+    };
+}
+
+void CountingSort(NVector::TVector<TPhoneNumber>& arr, uint8_t& idx, TPhoneNumber *result) 
+{
+    // Temporary array for digits
+    int tmp[10] = {0};
+    // Counting of quantity digits in numbers
     for (size_t i = 0; i < arr.Size(); ++i)
     {
-        if (segment == "number")
-        {
-            tmp[arr[i].key.number[idx] - '0']++;
-        }
-        else if (segment == "region")
-        {
-            tmp[arr[i].key.region_code[idx] - '0']++;
-        }
-        else
-        {
-            tmp[arr[i].key.country_code[idx] - '0']++;
-        }
+        tmp[(idx <= arr[i].null_counter ? '0' : arr[i].full_number[idx - arr[i].null_counter]) - '0']++;
     }
-    for (size_t i = 1; i < tmp.Size(); ++i)
+    // Counting of prefix sums
+    for (size_t i = 1; i < 10; ++i)
     {
         tmp[i] += tmp[i - 1];
     }
-    TPairKV<TPhoneNumber, std::string> *result = new TPairKV<TPhoneNumber, std::string>[arr.Size()];
+    // Destribution elements in result array
     for (size_t i = arr.Size(); i > 0; --i)
     {
-        if (segment == "number")
-        {
-            result[tmp[arr[i - 1].key.number[idx] - '0'] - 1] = arr[i - 1];
-            tmp[arr[i - 1].key.number[idx] - '0']--;
-        }
-        else if (segment == "region")
-        {
-            result[tmp[arr[i - 1].key.region_code[idx] - '0'] - 1] = arr[i - 1];
-            tmp[arr[i - 1].key.region_code[idx] - '0']--;
-        }
-        else
-        {
-            result[tmp[arr[i - 1].key.country_code[idx] - '0'] - 1] = arr[i - 1];
-            tmp[arr[i - 1].key.country_code[idx] - '0']--;
-        }
+        --tmp[(idx <= arr[i - 1].null_counter ? '0' : arr[i - 1].full_number[idx - arr[i - 1].null_counter]) - '0'];
+        result[tmp[(idx <= arr[i - 1].null_counter ? '0' : arr[i - 1].full_number[idx - arr[i - 1].null_counter]) - '0']] = arr[i - 1];
     }
+    // Copying of sorted elements in result array
     for (size_t i = 0; i < arr.Size(); ++i)
     {
-        arr[i] = result[i];
+        arr[i] = std::move(result[i]);
     }
-    delete[] result;
 }
 
-void Radix_sort(NVector::TVector<TPairKV<TPhoneNumber, std::string> >& arr, size_t max_country_len, size_t max_region_len, size_t max_number_len)
+void RadixSort(NVector::TVector<TPhoneNumber>& arr, uint8_t& max_len)
 {
-    for (size_t i = max_number_len; i > 0; --i)
+    // Allocating counting sort result array
+    TPhoneNumber *result = new TPhoneNumber[arr.Size()];
+    for (uint8_t i = max_len - 1; i > 0; --i)
     {
-        int max_digit = 0;
-        for (size_t j = 0; j < arr.Size(); ++j)
+        // '-' symbols in 4th and 8th idx's
+        if ((i == 8) || (i == 4))
         {
-            max_digit = (arr[j].key.number[i - 1] - '0' > max_digit ? arr[j].key.number[i - 1] - '0' : max_digit);
+            continue;
         }
-        Counting_sort(arr, i - 1, max_digit, "number");
-    }
-    for (size_t i = max_region_len; i > 0; --i)
-    {
-        int max_digit = 0;
-        for (size_t j = 0; j < arr.Size(); ++j)
-        {
-            max_digit = (arr[j].key.region_code[i - 1] - '0' > max_digit ? arr[j].key.region_code[i - 1] - '0' : max_digit);
-        }
-        Counting_sort(arr, i - 1, max_digit, "region");
-    }
-    for (size_t i = max_country_len; i > 0; --i)
-    {
-        int max_digit = 0;
-        for (size_t j = 0; j < arr.Size(); ++j)
-        {
-            max_digit = (arr[j].key.country_code[i - 1] - '0' > max_digit ? arr[j].key.country_code[i - 1] - '0' : max_digit);
-        }
-        Counting_sort(arr, i - 1, max_digit, "country");
+        CountingSort(arr, i, result);
     }
 }
 
 int main()
 {
-    TPairKV<TPhoneNumber, std::string> kv;
-    NVector::TVector<TPairKV<TPhoneNumber, std::string> > arr;
-    while (std::cin >> kv)
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+
+    TPhoneNumber number;
+    char value[MAX_LENGTH_OG_VALUE];
+
+    NVector::TVector<TPhoneNumber> arr;
+    NVector::TVector<std::shared_ptr<std::string>> valarr;
+    uint8_t max_len = 0;
+    // Reading elements
+    while (scanf("%s", number.full_number) != EOF)
     {
-        arr.Push_back(kv);
+        scanf("%s", value);
+        // Counting of max length of number
+        max_len = (strlen(number.full_number) > max_len ? strlen(number.full_number) : max_len);
+        // Null digits counter forward number
+        number.null_counter = MAX_LENGTH_OF_NUMBER - strlen(number.full_number);
+        // Idx for value array
+        number.idx = arr.Size();
+        // Filling of value array
+        valarr.Push_back(std::make_shared<std::string>(std::string(value)));
+        // Filling of key array
+        arr.Push_back(number);
     }
-    size_t max_country_len = 0;
-    size_t max_region_len = 0;
-    size_t max_number_len = 0;
+    // Sorting elements
+    RadixSort(arr, max_len);
+    // Printing elements
     for (size_t i = 0; i < arr.Size(); ++i)
     {
-        max_country_len = (arr[i].key.country_code.size() > max_country_len ? arr[i].key.country_code.size() : max_country_len);
-        max_region_len = (arr[i].key.region_code.size() > max_region_len ? arr[i].key.region_code.size() : max_region_len);
-        max_number_len = (arr[i].key.number.size() > max_number_len ? arr[i].key.number.size() : max_number_len);
-    }
-    for (size_t i = 0; i < arr.Size(); ++i)
-    {
-        arr[i].key.country_code = std::string(max_country_len - arr[i].key.country_code.size(), '0') + arr[i].key.country_code;
-        arr[i].key.region_code = std::string(max_region_len - arr[i].key.region_code.size(), '0') + arr[i].key.region_code;
-        arr[i].key.number = std::string(max_number_len - arr[i].key.number.size(), '0') + arr[i].key.number;
-    }
-    Radix_sort(arr, max_country_len, max_region_len, max_number_len);
-    for (size_t i = 0; i < arr.Size(); ++i)
-    {
-        std::cout << arr[i] << std::endl;
+        printf("%s\t%s\n", arr[i].full_number, valarr[arr[i].idx]->c_str());
     }
     return 0;
 }

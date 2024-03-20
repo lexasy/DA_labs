@@ -14,25 +14,25 @@ class TPhoneNumber:
 # Tests file counter
 TESTS_CNT = 10
 # Tests in file counter
-CNT_TESTS_PER_FILE = 1000
+CNT_TESTS_PER_FILE = 100000
 
 def generate_kv() -> tuple[TPhoneNumber, str]:
     key = "+"
     country = str(random.randint(1, 999))
     key += country
     key += "-"
-    region = str(random.randint(1, 999))
+    region = str(random.randint(100, 999))
     key += region
     key += "-"
-    number = str(random.randint(10000, 999999))
+    number = str(random.randint(1000000, 9999999))
     key += number
     phone = TPhoneNumber(country=int(country), region=int(region), number=int(number), phonenumber=key)
     value = ""
     length = random.randint(1, 64)
     for _ in range(length):
         value += random.choice(string.ascii_letters + "0123456789")
-    for _ in range(64 - length):
-        value += "\0"
+    # for _ in range(64 - length):
+    #     value += "\0"
     return phone, value
 
 def main() -> None:
