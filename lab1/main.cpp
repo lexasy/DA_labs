@@ -2,9 +2,13 @@
 #include <string>
 #include <cstring>
 #include <memory>
+// #include <chrono>
+
+// using duration_t = std::chrono::microseconds;
+// const std::string DURATION_PREFIX = "ms";
 
 const size_t MAX_LENGTH_OF_NUMBER = 16;
-const size_t MAX_LENGTH_OG_VALUE = 64;
+const size_t MAX_LENGTH_OF_VALUE = 64;
 const size_t DEFAULT = 1000000;
 
 class TPhoneNumber 
@@ -121,7 +125,7 @@ int main()
     std::cout.tie(0);
 
     TPhoneNumber number;
-    char value[MAX_LENGTH_OG_VALUE];
+    char value[MAX_LENGTH_OF_VALUE];
 
     NVector::TVector<TPhoneNumber> arr;
     NVector::TVector<std::shared_ptr<std::string>> valarr;
@@ -141,12 +145,16 @@ int main()
         // Filling of key array
         arr.Push_back(number);
     }
+    // std::chrono::time_point<std::chrono::system_clock> start_ts = std::chrono::system_clock::now();
     // Sorting elements
     RadixSort(arr, max_len);
+    // auto end_ts = std::chrono::system_clock::now();
+    // uint64_t sort_ts = std::chrono::duration_cast<duration_t>( end_ts - start_ts ).count();
     // Printing elements
     for (size_t i = 0; i < arr.Size(); ++i)
     {
         printf("%s\t%s\n", arr[i].full_number, valarr[arr[i].idx]->c_str());
     }
+    // std::cout << "time: " << sort_ts << DURATION_PREFIX << "\n";
     return 0;
 }
