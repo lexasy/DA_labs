@@ -88,7 +88,7 @@ function main()
     done
 
     # Trash cleaning
-    make clear
+    # make clear
     rm diffo
     # rm -rf ${TESTS_DIR}
     rm tmp
