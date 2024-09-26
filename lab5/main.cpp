@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <limits.h>
 
 const size_t ALPHABET_SIZE = 256;
 
@@ -19,6 +21,16 @@ public:
 int Modulo(int a, int b)
 {
     return (a >= 0 ? a % b : (b + a) % b);
+}
+
+int NextPowerOf2(size_t size)
+{
+    int power = 0;
+    while (size > (1 << power))
+    {
+        power++;
+    }
+    return (1 << power);
 }
 
 std::vector<int> CountingSortWithIdxs(std::vector<char>& array)
@@ -49,7 +61,7 @@ std::vector<int> CountingSortWithIdxs(std::vector<char>& array)
 
 void CountingSort(std::vector<TItem>& array)
 {
-    int tmp[ALPHABET_SIZE] = {0};
+    int tmp[array.size()] = {0};
     std::vector<TItem> result = std::vector<TItem>(array.size(), {0, 0, 0});
     for (size_t i = 0; i < array.size(); ++i)
     {
@@ -59,7 +71,7 @@ void CountingSort(std::vector<TItem>& array)
     {
         tmp[array[i].current_equivalence_class]++;
     }
-    for (size_t i = 1; i < ALPHABET_SIZE; ++i)
+    for (size_t i = 1; i < array.size(); ++i)
     {
         tmp[i] += tmp[i - 1];
     }
@@ -127,28 +139,97 @@ std::vector<int> SuffixArrayBuilder(std::string text, int added_sentinels)
     return result_suffix_array;
 }
 
-int NextPowerOf2(size_t size)
+int StringsComparator(std::string text, std::string pattern, int idx) // 0 - равны, -1 - паттерн меньше, 1 - паттерн больше
 {
-    int power = 0;
-    while (size > (1 << power))
-    {
-        power++;
+    int flag = 0;
+    for (size_t i = 0; i < pattern.size(); ++i)
+    {   
+        if (idx + i + 1 > text.size())
+        {
+            flag = 1;
+            break;
+        }
+        if (text[idx + i] != pattern[i])
+        {
+            flag = (text[idx + i] > pattern[i] ? -1 : 1);
+            break;
+        }
     }
-    return (1 << power);
+    return flag;
 }
 
 int main()
 {
     std::string input_text;
-    while (std::cin >> input_text)
+    getline(std::cin, input_text);
+    int added_sentinels = NextPowerOf2(input_text.size() + 1) - input_text.size(); // +1 - $ в конце, -1 $ в конце, +1 не учитывать $ в конце
+    std::string input_text_with_sentinels = input_text + std::string(added_sentinels, '$');
+    std::vector<int> suffix_array = SuffixArrayBuilder(input_text_with_sentinels, added_sentinels);
+    std::string pattern;
+    int patterns_counter = 0;
+    while (getline(std::cin, pattern))
     {
-        int added_sentinels = NextPowerOf2(input_text.size() + 1) - input_text.size(); // +1 - $ в конце, -1 $ в конце, +1 не учитывать $ в конце
-        input_text += std::string(added_sentinels, '$');
-        std::vector<int> suffix_array = SuffixArrayBuilder(input_text, added_sentinels);
-        for (size_t i = 0; i < suffix_array.size(); ++i)
+        std::vector<int> result;
+        patterns_counter++;
+        if ((pattern.size() > input_text.size()) || (pattern.size() == 0))
         {
-            std::cout << suffix_array[i] << " ";
+            continue;
         }
-        std::cout << "\n";
+        int l = 0;
+        int r = suffix_array.size() - 1;
+        while (l + 1 < r)
+        {   
+            int m = (l + r) / 2;
+            int compare_result = StringsComparator(input_text, pattern, suffix_array[m]);
+            if (compare_result == 1)
+            {
+                l = m;
+            }
+            else
+            {
+                r = m;
+            }
+        }
+        if (StringsComparator(input_text, pattern, suffix_array[l]) == 0)
+        {
+            result.push_back(suffix_array[l]);
+            for (size_t i = l + 1; i < suffix_array.size(); ++i)
+            {
+                if (StringsComparator(input_text, pattern, suffix_array[i]) == 0)
+                {
+                    result.push_back(suffix_array[i]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        else if (StringsComparator(input_text, pattern, suffix_array[r]) == 0)
+        {
+            result.push_back(suffix_array[r]);
+            for (size_t i = r + 1; i < suffix_array.size(); ++i)
+            {
+                if (StringsComparator(input_text, pattern, suffix_array[i]) == 0)
+                {
+                    result.push_back(suffix_array[i]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        if (result.size() != 0)
+        {
+            std::cout << patterns_counter << ": ";
+            std::sort(result.begin(), result.end());
+            std::cout << result[0] + 1;
+            for (size_t i = 1; i < result.size(); ++i)
+            {
+                std::cout << ", " << result[i] + 1;
+            }
+            std::cout << "\n";
+        }
     }
 }
