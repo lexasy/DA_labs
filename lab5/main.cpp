@@ -16,7 +16,7 @@ public:
     }
 };
 
-int modulo(int a, int b)
+int Modulo(int a, int b)
 {
     return (a >= 0 ? a % b : (b + a) % b);
 }
@@ -53,7 +53,7 @@ void CountingSort(std::vector<TItem>& array)
     std::vector<TItem> result = std::vector<TItem>(array.size(), {0, 0, 0});
     for (size_t i = 0; i < array.size(); ++i)
     {
-        result[i].old_equivalence_class = array[i].old_equivalence_class;
+        result[i].old_equivalence_class = array[i].old_equivalence_class; // old equivalence classes are in need order for index requests
     }
     for (size_t i = 0; i < array.size(); ++i)
     {
@@ -97,20 +97,20 @@ std::vector<int> SuffixArrayBuilder(std::string text, int added_sentinels)
     std::vector<TItem> items_array;
     for (size_t i = 0; i < text.size(); ++i)
     {
-        items_array.push_back({suffix_array[i], equivalence_classes_specified_index[i], equivalence_classes_specified_index[modulo((suffix_array[i] - 1), text.size())]});
+        items_array.push_back({suffix_array[i], equivalence_classes_specified_index[i], equivalence_classes_specified_index[Modulo((suffix_array[i] - 1), text.size())]}); // not old equivalence classes, but in need order for index requests
     }
     for (int p = 0; (1 << p) < text.size(); ++p)
     {
         for (size_t i = 0; i < text.size(); ++i)
         {
-            items_array[i].idx = modulo((items_array[i].idx - (1 << p)), text.size());
+            items_array[i].idx = Modulo((items_array[i].idx - (1 << p)), text.size());
             items_array[i].current_equivalence_class = items_array[items_array[i].idx].old_equivalence_class;
         }
         CountingSort(items_array);
         std::vector<std::pair<int, int>> pair_equivalence_classes;
         for (size_t i = 0; i < items_array.size(); ++i)
         {
-            pair_equivalence_classes.push_back({items_array[i].current_equivalence_class, items_array[modulo((items_array[i].idx + (1 << p)), text.size())].old_equivalence_class});
+            pair_equivalence_classes.push_back({items_array[i].current_equivalence_class, items_array[Modulo((items_array[i].idx + (1 << p)), text.size())].old_equivalence_class});
         }
         items_array[0].current_equivalence_class = 0;
         for (size_t i = 1; i < items_array.size(); ++i)
@@ -137,17 +137,18 @@ int NextPowerOf2(size_t size)
     return (1 << power);
 }
 
-
 int main()
 {
     std::string input_text;
-    std::cin >> input_text;
-    int added_sentinels = NextPowerOf2(input_text.size() + 1) - input_text.size(); // +1 - $ в конце, -1 $ в конце, +1 не учитывать $ в конце
-    input_text += std::string(added_sentinels, '$');
-    std::vector<int> suffix_array = SuffixArrayBuilder(input_text, added_sentinels);
-    for (size_t i = 0; i < suffix_array.size(); ++i)
+    while (std::cin >> input_text)
     {
-        std::cout << suffix_array[i] << " ";
+        int added_sentinels = NextPowerOf2(input_text.size() + 1) - input_text.size(); // +1 - $ в конце, -1 $ в конце, +1 не учитывать $ в конце
+        input_text += std::string(added_sentinels, '$');
+        std::vector<int> suffix_array = SuffixArrayBuilder(input_text, added_sentinels);
+        for (size_t i = 0; i < suffix_array.size(); ++i)
+        {
+            std::cout << suffix_array[i] << " ";
+        }
+        std::cout << "\n";
     }
-    std::cout << "\n";
 }
