@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <limits.h>
 
 const size_t ALPHABET_SIZE = 256;
 

@@ -56,7 +56,7 @@ def main() -> None:
                     else:
                         # Берём рандомную подстроку. Она может совпасть с 
                         # существующей.
-                        pattern = get_random_text( random.randint( 1, 10 ) )
+                        pattern = get_random_text( random.randint( 1, 100 ) )
                     # Определяем позиции, на которых встретился наш шаблон в тексте.
                     #pos = [ str(m.start()+1) for m in re.finditer(pattern, text) ]
                     pos = get_all_occurrences( text, pattern )
