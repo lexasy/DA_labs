@@ -109,7 +109,7 @@ std::vector<int> SuffixArrayBuilder(std::string text, int added_sentinels)
     std::vector<TItem> items_array;
     for (size_t i = 0; i < text.size(); ++i)
     {
-        items_array.push_back({suffix_array[i], equivalence_classes_specified_index[i], equivalence_classes_specified_index[Modulo((suffix_array[i] - 1), text.size())]}); // not old equivalence classes, but in need order for index requests
+        items_array.push_back({suffix_array[i], equivalence_classes_specified_index[i], equivalence_classes[i]}); // not old equivalence classes, but in need order for index requests
     }
     for (int p = 0; (1 << p) < text.size(); ++p)
     {
