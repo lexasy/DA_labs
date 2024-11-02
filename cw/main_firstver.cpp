@@ -134,6 +134,7 @@ public:
             // std::cout << pair.first << ": " << pair.second.frequency_in_zero + 1 << " " << pair.second.frequency_in_first + 1 << " " << pair.second.probability_in_zero << " " << pair.second.probability_in_first << "\n";
         }   
         std::pair<float, float> probabilities = this->probability_calculator(words);
+        
         result = (probabilities.first > probabilities.second ? 0 : 1);
         for (size_t j = 0; j < words_to_delete.size(); ++j)
         {
