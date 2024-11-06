@@ -1,0 +1,51 @@
+20 10
+0
+The dog is playing in the park with a ball.
+0
+The cat is sleeping on the windowsill, sunny day.
+1
+Today I bought a new computer.
+0
+The weather is beautiful, a perfect day for a walk.
+1
+I am studying machine learning and artificial intelligence.
+0
+Children are playing in the sandbox.
+1
+The new book on programming is very interesting.
+0
+The old house at the corner of the street.
+1
+The movie was thrilling and full of unexpected twists.
+0
+I love cooking and trying new recipes.
+1
+Scientific research opens new horizons.
+0
+Birds sing in the spring when the trees bloom.
+1
+I started exercising and feel better.
+0
+Snow is falling, and the streets are turning white.
+1
+Technology is advancing at an incredible pace.
+0
+Summer is the time for vacations and relaxation.
+1
+I write articles about health and wellness.
+0
+The sun is shining brightly, and the sky is clear.
+1
+Learning languages opens up new opportunities.
+0
+In the evening, I enjoy walking in the park.
+The puppy is playing with a new toy.
+I just finished reading a fascinating book.
+The sun is setting, and the sky is beautiful.
+I enjoy learning about new technologies.
+The children are laughing and having fun.
+This movie is one of the best I've ever seen!
+Rainy days make me feel cozy and relaxed.
+I am excited to start my new job next week.
+The flowers are blooming in the garden.
+I love exploring new places and cultures.
