@@ -37,6 +37,7 @@ int main()
     int max_a = 0, max_b = 0, max_c = 0;
     for (size_t i = 0; i < n - 2; ++i)
     {
+        // rule of triangle existance
         if (side_sizes[i] <  side_sizes[i + 1] + side_sizes[i + 2])
         {
             TTriangle triangle(side_sizes[i], side_sizes[i + 1], side_sizes[i + 2]);
