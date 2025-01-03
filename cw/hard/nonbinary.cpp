@@ -156,15 +156,12 @@ public:
         {
             tags_quantity[class_label] = prior_probabilities[class_label];
             prior_probabilities[class_label] = log(prior_probabilities[class_label]) - log(X.size());
-            // std::cout << class_label << ": " << prior_probabilities[class_label] << "\n";
         }
-        // std::cout << "\n";
         this->dict_size = word_stats.size();
     }
 
     std::vector<std::string> predict(std::string X)
     {
-        // std::cout << X << "\n";
         std::vector<std::string> words = WordsSplit(ToLower(X));
         std::vector<std::pair<std::string, long double>> prediction;
         for (const auto& class_label : class_labels)
@@ -191,18 +188,13 @@ public:
     void save_stats(const std::string& filename)
     {
         std::ofstream ofs(filename);
-        // ofs << "=====QUESTIONS QUANTITY=====";
         ofs << questions_quantity << "\n";
-        // ofs << "=====DICT SIZE=====\n";
         ofs << dict_size << "\n";
-        // ofs << "=====UNIQUE TAGS QUANTITY=====\n";
         ofs << class_labels.size() << "\n";
-        // ofs << "=====CLASSES FREQUENCY=====\n";
         for (const auto& class_label : class_labels)
         {
             ofs << class_label << " " << tags_quantity[class_label] << "\n";
         }
-        // ofs << "=====WORD STATS=====\n";
         for (auto& pair : word_stats)
         {
             ofs << pair.first;
@@ -217,18 +209,14 @@ public:
     void load_stats(const std::string& filename)
     {
         std::ifstream ifs(filename);
-        // ifs.ignore();
         ifs >> questions_quantity;
-        // ifs.ignore();
         ifs >> dict_size;
         class_labels.clear();
         prior_probabilities.clear();
         tags_quantity.clear();
         std::string class_label;
-        // ifs.ignore();
         size_t tags;
         ifs >> tags;
-        // ifs.ignore();
         for (size_t _ = 0; _ < tags; _++)
         {
             std::string class_label;
@@ -236,9 +224,7 @@ public:
             class_labels.push_back(class_label);
             ifs >> tags_quantity[class_label];
             prior_probabilities[class_label] = log(tags_quantity[class_label]) - log(questions_quantity);
-            std::cout << class_label << ": " << prior_probabilities[class_label] << "\n";
         }
-        // ifs.ignore();
         word_stats.clear();
         std::string word;
         while (ifs >> word)
